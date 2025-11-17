@@ -24,6 +24,10 @@ def render_solar_chart(daily_profile, chart_rows, data_char, current_char):
 
     # 3. Scale and Plotting
 
+    if chart_rows < 2:
+        chart_rows = 2
+    if chart_rows > 30:
+        chart_rows = 30
     # Calculate the height interval for each row
     height_interval = chart_ceiling / chart_rows
 
