@@ -2,25 +2,30 @@ import math
 from datetime import datetime, UTC
 
 
-def get_solar_chart(daily_profile, chart_rows, data_char, current_char):
+def get_solar_chart(daily_profile, chart_rows, data_char, current_char, current_hour=None):
     """
     Renders the solar elevation profile as a simple ASCII chart.
+
+    If current_hour is provided, it will be used instead of the runtime UTC hour. This
+    makes the function easier to test deterministically.
     """
 
     # 1. Filter out values below the horizon (elevation <= 0)
     sun_above_horizon = [p for p in daily_profile if p['angle_deg'] > 0]
 
     if not sun_above_horizon:
-        print("\nNote: The sun is below the horizon for the entire day at this location/date.")
-        return
+        return ["Note: The sun is below the horizon for the entire day at this location/date."]
 
     # 2. Determine the chart ceiling (max elevation rounded up to nearest 10)
     max_elevation = max(p['angle_deg'] for p in sun_above_horizon)
     # Round up to the nearest 10
     chart_ceiling = math.ceil(max_elevation / 10.0) * 10
 
-    # Get the current hour in UTC for marking
-    current_utc_hour = datetime.now(UTC).hour
+    # Get the current hour in UTC for marking (use provided current_hour if set)
+    if current_hour is None:
+        current_utc_hour = datetime.now(UTC).hour
+    else:
+        current_utc_hour = int(current_hour)
 
     # 3. Scale and Plotting
 
@@ -59,7 +64,7 @@ def get_solar_chart(daily_profile, chart_rows, data_char, current_char):
                 # Space for hours not in this row segment or below 0 degrees
                 row_content.append(' ')
 
-                # Determine the Y-axis label
+        # Determine the Y-axis label
         if row_index == 0:
             # Top row label is the ceiling
             label = f"{chart_ceiling}°"
@@ -78,9 +83,3 @@ def get_solar_chart(daily_profile, chart_rows, data_char, current_char):
     separator = " " * 4 + "-" * 48
     chart_output.append(separator)
     return chart_output
-    # X-axis labels
-    x_axis_labels = "    00:00" + " " * 34 + "23:00"
-
-    # Print the chart
-    chart = "\n".join(chart_output) + "\n" + separator # + "\n" + x_axis_labels
-    print(chart)
