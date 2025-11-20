@@ -10,7 +10,8 @@ def get_moon_phase(date_str):
         date_str (str): The date to calculate the phase for.
 
     Returns:
-        string: The name of the Lunar phase on the provided date
+        phase_name (str): The name of the Lunar phase on the provided date
+        fraction (float): The fraction of the moon illuminated
     """
 
     # 1. Handle default date (Today in UTC)
@@ -22,14 +23,15 @@ def get_moon_phase(date_str):
     moon.compute(date_str_pyephem)
 
     # 3. Key Values
+    current_date_ephem = ephem.Date(date_str_pyephem)
+    prev_new_moon_date = ephem.previous_new_moon(date_str_pyephem)
     fraction = moon.moon_phase  # Illuminated fraction (0.0 to 1.0)
-    age = moon.phase  # Age in days (0.0 to ~29.53)
+    age = current_date_ephem - prev_new_moon_date  # Age in days (0.0 to ~29.53)
 
     # Cycle markers
     full_moon_age = 14.77
 
     # 4. Determine Descriptive Phase Name
-
     if fraction < 0.01:
         phase_name = "New Moon"
     elif fraction > 0.99:
@@ -46,9 +48,6 @@ def get_moon_phase(date_str):
             phase_name = "Waxing Gibbous"
         else:
             phase_name = "Waning Gibbous"
-    elif 0.499 < fraction < 0.501:
-        # ~half illuminated: Half moon
-        phase_name = "Half Moon"
     else:
         # Near 50% illuminated: Quarter
         if age < full_moon_age:
