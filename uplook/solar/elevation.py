@@ -30,7 +30,7 @@ def calculate_solar_elevation(date_str, time_str, longitude, latitude):
         print(f"Error calculating elevation for {date_str} {time_str}: {e}")
         return None
 
-def get_daily_solar_profile(longitude, latitude, date_str):
+def calculate_daily_solar_profile(longitude, latitude, date_str):
     """Generates an array of solar elevation angles for every hour (00:00 to 23:00 UTC)."""
 
     hourly_angles = []
@@ -48,7 +48,7 @@ def get_daily_solar_profile(longitude, latitude, date_str):
 
     return hourly_angles
 
-def get_daily_solar_summary(longitude, latitude, date_str):
+def calculate_daily_solar_summary(longitude, latitude, date_str):
     """
     Generates an array containing times for sunrise, solar zenith, and sunset
     for the given date and location.

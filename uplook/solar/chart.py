@@ -2,7 +2,7 @@ import math
 from datetime import datetime, UTC
 
 
-def render_solar_chart(daily_profile, chart_rows, data_char, current_char):
+def get_solar_chart(daily_profile, chart_rows, data_char, current_char):
     """
     Renders the solar elevation profile as a simple ASCII chart.
     """
@@ -76,7 +76,8 @@ def render_solar_chart(daily_profile, chart_rows, data_char, current_char):
 
     # Separator line
     separator = " " * 4 + "-" * 48
-
+    chart_output.append(separator)
+    return chart_output
     # X-axis labels
     x_axis_labels = "    00:00" + " " * 34 + "23:00"
 

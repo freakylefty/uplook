@@ -1,4 +1,4 @@
-def render_lunar_phase(phase_name, char='#'):
+def get_lunar_phase(phase_name, char='#'):
     """
     Outputs a simple 5-row ASCII drawing of the moon phase.
 
@@ -16,7 +16,7 @@ def render_lunar_phase(phase_name, char='#'):
 
     moon_patterns = {
         # Fully Dark / Fully Light
-        "New Moon": ["     ", "     ", "  _  ", "     ", "     "],
+        "New Moon": ["     ", "     ", "     ", "     ", "     "],
         "Full Moon": [" ### ", "#####", "#####", "#####", " ### "],
 
         # Quarters (Half Light)
@@ -36,11 +36,13 @@ def render_lunar_phase(phase_name, char='#'):
     try:
         pattern = moon_patterns[phase_name]
     except KeyError:
-        print(f"Error: Unknown phase name '{phase_name}'. Defaulting to Full Moon pattern.")
         pattern = moon_patterns["Full Moon"]
 
     # Replace the placeholder '#' with the user's chosen character
     # Pad the side with spaces for the crescent/gibbous/quarter patterns
+    lines = []
     for line in pattern:
         rendered_line = line.replace('#', char)
-        print(f"    {rendered_line}")
+        lines.append(f"    {rendered_line}")
+
+    return lines

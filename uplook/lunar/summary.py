@@ -18,10 +18,10 @@ def fraction_to_percent_string(fraction):
     # Format as a string with the percentage sign
     return f"{rounded_percent}%"
 
-def render_lunar_summary(phase, fraction, date_str):
+def get_lunar_summary(phase, fraction, date_str):
     """
     Renders the current Lunar state as a simple one-line summary
     """
     percent = fraction_to_percent_string(fraction)
-    print(f"Lunar profile for {date_str}: {phase} ({percent} illuminated)")
+    return [f"Lunar profile for {date_str}: {phase} ({percent} illuminated)"]
 

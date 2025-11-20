@@ -1,12 +1,16 @@
 import argparse
 from datetime import datetime, UTC
-from solar.elevation import get_daily_solar_profile, get_daily_solar_summary
-from solar.chart import render_solar_chart
-from solar.summary import render_solar_summary
-from solar.table import render_solar_table
+from solar.elevation import calculate_daily_solar_profile, calculate_daily_solar_summary
+from solar.chart import get_solar_chart
+from solar.summary import get_solar_summary
+from solar.table import get_solar_table
 from lunar.phase import get_moon_phase
-from lunar.summary import render_lunar_summary
-from lunar.image import render_lunar_phase
+from lunar.summary import get_lunar_summary
+from lunar.image import get_lunar_phase
+
+def print_lines(lines):
+    for line in lines:
+        print(line)
 
 def setup_arg_parser():
     """
@@ -117,25 +121,28 @@ def main():
     if (args.command == 'lunar'):
         # Render lunar data
         phase_name, fraction = get_moon_phase(date_used)
+        lunar_lines = []
         match args.type:
             case 'image':
-                render_lunar_phase(phase_name, char=args.char)
+                lunar_lines = get_lunar_phase(phase_name, char=args.char)
             case 'summary':
-                render_lunar_summary(phase_name, fraction, date_used)
+                lunar_lines = get_lunar_summary(phase_name, fraction, date_used)
             case 'combined':
-                render_lunar_summary(phase_name, fraction, date_used)
-                render_lunar_phase(phase_name, char=args.char)
+                lunar_lines = get_lunar_summary(phase_name, fraction, date_used)
+                lunar_lines = lunar_lines + get_lunar_phase(phase_name, char=args.char)
+        print_lines(lunar_lines)
 
     elif (args.command == 'solar'):
         # Render solar data
-        daily_profile = get_daily_solar_profile(args.lon, args.lat, date_used)
-        daily_summary = get_daily_solar_summary(args.lon, args.lat, date_used)
-        render_solar_summary(daily_summary, args.lon, args.lat, date_used)
+        daily_profile = calculate_daily_solar_profile(args.lon, args.lat, date_used)
+        daily_summary = calculate_daily_solar_summary(args.lon, args.lat, date_used)
+        solar_summary_output = get_solar_summary(daily_summary, args.lon, args.lat, date_used)
         match args.type:
             case 'chart':
-                render_solar_chart(daily_profile, args.rows, args.data_char, args.current_char)
+                solar_summary_output = solar_summary_output + get_solar_chart(daily_profile, args.rows, args.data_char, args.current_char)
             case 'table':
-                render_solar_table(daily_profile)
+                solar_summary_output = solar_summary_output + get_solar_table(daily_profile)
+        print_lines(solar_summary_output)
 
 if __name__ == "__main__":
     main()
